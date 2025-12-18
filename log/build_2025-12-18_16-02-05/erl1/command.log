@@ -1,0 +1,4 @@
+Invoking command in '/my_folder/build/erl1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /my_folder/build/erl1 -- -j12 -l12
+Invoked command in '/my_folder/build/erl1' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /my_folder/build/erl1 -- -j12 -l12
+Invoking command in '/my_folder/build/erl1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /my_folder/build/erl1
+Invoked command in '/my_folder/build/erl1' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /my_folder/build/erl1

@@ -1,0 +1,9 @@
+/my_folder/build/erl1/CMakeFiles/uninstall.dir
+/my_folder/build/erl1/CMakeFiles/erl1_uninstall.dir
+/my_folder/build/erl1/CMakeFiles/test.dir
+/my_folder/build/erl1/CMakeFiles/edit_cache.dir
+/my_folder/build/erl1/CMakeFiles/rebuild_cache.dir
+/my_folder/build/erl1/CMakeFiles/list_install_components.dir
+/my_folder/build/erl1/CMakeFiles/install.dir
+/my_folder/build/erl1/CMakeFiles/install/local.dir
+/my_folder/build/erl1/CMakeFiles/install/strip.dir

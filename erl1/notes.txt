@@ -1,0 +1,1 @@
+root@docker-desktop:/my_folder# ros2 erl1 launch spawn_robot.launch.py

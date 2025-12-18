@@ -1,0 +1,275 @@
+<?xml version='1.0'?>
+<!-- XML declaration -->
+
+<robot name="erl1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- Robot definition using xacro macros -->
+
+  <!-- Include Gazebo-specific plugins and parameters -->
+  <xacro:include filename="$(find erl1)/urdf/erl1.gazebo" />
+
+  <!-- Wheel geometry parameters -->
+  <xacro:property name="length_wheel" value="0.04" />
+  <xacro:property name="radius_wheel" value="0.1" />
+
+  <!-- Macro defining a default inertial block -->
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <!-- Mass of the link -->
+      <mass value="${mass}" />
+      <!-- Orientation of inertia reference frame -->
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <!-- Inertia tensor values -->
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0"
+               iyy="0.000526666666667" iyz="0"
+               izz="0.001"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Macro defining wheel geometry -->
+  <xacro:macro name="wheel_geometry">
+    <geometry>
+      <!-- Cylindrical wheel -->
+      <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+    </geometry>
+  </xacro:macro>
+
+  <!-- Material definition -->
+  <material name="blue">
+    <color rgba="0.203125 0.23828125 0.28515625 1.0"/>
+  </material>
+
+  <!-- Main robot body -->
+  <link name="link_chassis">
+
+    <!-- Initial pose (Gazebo-only, ignored by pure URDF) -->
+    <pose>0 0 0.1 0 0 0</pose>
+
+    <!-- Chassis inertial properties -->
+    <inertial>
+      <mass value="5"/>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <inertia ixx="0.0395416666667" ixy="0" ixz="0"
+               iyy="0.106208333333" iyz="0"
+               izz="0.106208333333"/>
+    </inertial>
+
+    <!-- Collision geometry for physics -->
+    <collision name="collision_chassis">
+      <geometry>
+        <box size="0.4 0.2 0.1"/>
+      </geometry>
+    </collision>
+
+    <!-- Visual geometry for rendering -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.4 0.2 0.1"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <!-- Front caster collision -->
+    <collision name="caster_front_collision">
+      <origin rpy="0 0 0" xyz="0.35 0 -0.05"/>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+    </collision>
+
+    <!-- Front caster visual -->
+    <visual name="caster_front_visual">
+      <origin rpy="0 0 0" xyz="0.2 0 -0.05"/>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Left wheel joint -->
+  <joint type="continuous" name="left_wheel_joint">
+    <!-- Position of joint relative to chassis -->
+    <origin xyz="-0.1 0.15 0" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="left_wheel"/>
+    <!-- Rotation axis (wheel spins about Y) -->
+    <axis xyz="0 1 0"/>
+    <!-- Joint limits -->
+    <limit effort="100" velocity="10"/>
+    <!-- Joint damping and friction -->
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  <!-- Left wheel link -->
+  <link name="left_wheel">
+
+    <!-- Wheel inertial properties -->
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <inertia ixx="0.014" ixy="0" ixz="0"
+               iyy="0.014" iyz="0"
+               izz="0.025"/>
+    </inertial>
+
+    <!-- Collision geometry -->
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".1" length=".05"/>
+      </geometry>
+    </collision>
+
+    <!-- Visual geometry -->
+    <visual name="left_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".1" length=".05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Right wheel joint (mirror of left) -->
+  <joint type="continuous" name="right_wheel_joint">
+    <origin xyz="-0.1 -0.15 0" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="right_wheel"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100" velocity="10"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  <!-- Right wheel link -->
+  <link name="right_wheel">
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <inertia ixx="0.014" ixy="0" ixz="0"
+               iyy="0.014" iyz="0"
+               izz="0.025"/>
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".1" length=".05"/>
+      </geometry>
+    </collision>
+
+    <visual name="right_wheel_visual">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".1" length=".05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Rotating joint mounted on the chassis -->
+  <joint name="rotating_link_joint" type="continuous">
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="rotating_link"/>
+    <!-- Rotation around vertical Z axis -->
+    <axis xyz="0 0 1"/>
+    <limit effort="5" velocity="2.0"/>
+  </joint>
+
+  <!-- First rotating link -->
+  <link name="rotating_link">
+    <inertial>
+      <mass value="0.3"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0"
+               iyy="0.0002" iyz="0"
+               izz="0.0002"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.03"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.06"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.03"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.06"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Second rotating joint attached to rotating_link -->
+  <joint name="rotating_link_joint_continuation" type="fixed">
+    <origin xyz="0 0 0.09" rpy="0 0 0"/>
+    <parent link="rotating_link"/>
+    <child link="rotating_link_continuation"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="5" velocity="2.0"/>
+  </joint>
+
+  <!-- Continuation link (box) -->
+  <link name="rotating_link_continuation">
+    <inertial>
+      <mass value="0.3"/>
+      <origin xyz="0 0 0.5"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0"
+               iyy="0.0002" iyz="0"
+               izz="0.0002"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.09"/>
+      <geometry>
+        <box size="0.1 0.2 0.3"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.03"/>
+      <geometry>
+        <box size="0.1 0.2 0.3"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <!-- last rotating joint attached to rotating_link -->
+  <joint name="last_rotating_link_joint_continuation" type="continuous">
+    <origin xyz="0 0.2 0.10" rpy="0 0 0"/>
+    <parent link="rotating_link_continuation"/>
+    <child link="rotating_link_continuation_2"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="5" velocity="2.0"/>
+  </joint>
+
+
+  <!-- Continuation link (box) -->
+  <link name="rotating_link_continuation_2">
+    <inertial>
+      <mass value="0.3"/>
+      <origin xyz="0 0 0.5"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0"
+               iyy="0.0002" iyz="0"
+               izz="0.0002"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.09"/>
+      <geometry>
+        <box size="0.1 0.1 0.2"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.03"/>
+      <geometry>
+        <box size="0.1 0.1 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+
+</robot>
