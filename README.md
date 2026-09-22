@@ -1,1 +1,1 @@
-Project playing around with ros2 in order to prepare for exam in the course "Experimental robotics"
+Project playing around with ros2 as preperation for exam in "Experimental robotics"
